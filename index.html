@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#1a0a2e"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Yuna 2"/>
+  <meta name="description" content="Histórias mágicas para pequenos sonhadores"/>
+  <title>Yuna 2 ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --gold:#c8963e;--gold-light:#e8c07a;--ink:#1a0a2e;--paper:#fdf8f0;
+      --plum:#7b3fa8;--plum-dark:#4a1f7a;--rose:#c45e7a;--violet:#9b59d0;
+      --glass:rgba(255,255,255,.06);--gbdr:rgba(255,255,255,.12);
+    }
+    html{height:100%;-webkit-tap-highlight-color:transparent}
+    body{
+      min-height:100%;font-family:'Lato',sans-serif;
+      background:radial-gradient(ellipse at 25% 5%,#3d1a6e 0%,#1a0a2e 50%,#0a0618 100%);
+      color:var(--paper);overflow-x:hidden;
+      padding-top:env(safe-area-inset-top,0px);
+      padding-bottom:env(safe-area-inset-bottom,0px);
+    }
+
+    /* ── Stars ── */
+    #stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .sd{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite var(--dl)}
+    @keyframes tw{0%,100%{opacity:var(--lo);transform:scale(1)}50%{opacity:var(--hi);transform:scale(1.6)}}
+
+    /* ── Screens ── */
+    .screen{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:0 18px 100px;position:relative;z-index:1}
+    .screen.active{display:flex;animation:up .4s ease both}
+    @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── Header ── */
+    .hdr{text-align:center;padding:44px 0 26px;width:100%}
+    .brand-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .jaguar-svg{animation:fl 5s ease-in-out infinite}
+    @keyframes fl{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+    .htitle{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--gold-light);line-height:1;margin-top:4px;letter-spacing:.03em}
+    .htitle sup{font-size:1rem;vertical-align:super;color:var(--violet);font-weight:400;margin-left:2px}
+    .hsub{font-size:.79rem;color:#b8a0d8;margin-top:5px;font-weight:300;letter-spacing:.09em;text-transform:uppercase}
+
+    /* ── Card ── */
+    .card{background:var(--glass);border:1px solid var(--gbdr);border-radius:22px;padding:28px 24px;width:100%;max-width:460px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07)}
+    .ctitle{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold-light);margin-bottom:4px}
+    .csub{font-size:.77rem;color:#9980bb;margin-bottom:20px;font-weight:300;line-height:1.55}
+
+    /* ── Fields ── */
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:.69rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a898c8;margin-bottom:7px}
+    .field input,.field select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;color:var(--paper);font-family:'Lato',sans-serif;font-size:1rem;padding:13px 14px;outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none}
+    .field input[type=password]{letter-spacing:.1em}
+    .field input::placeholder{color:#6858a0}
+    .field input:focus,.field select:focus{border-color:var(--gold);background:rgba(255,255,255,.11)}
+    .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b8a8d0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+    .field select option{background:#1a0a2e}
+    .field-note{font-size:.72rem;color:#6858a0;margin-top:7px;line-height:1.5}
+
+    /* ── Chips ── */
+    .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+    .chip{padding:7px 14px;border-radius:999px;font-size:.81rem;cursor:pointer;border:1px solid rgba(200,150,62,.38);color:#c8b07a;background:rgba(200,150,62,.07);transition:all .15s;user-select:none;-webkit-user-select:none}
+    .chip.on{background:var(--gold);color:var(--ink);border-color:var(--gold);font-weight:700}
+
+    /* ── Buttons ── */
+    .btn{width:100%;padding:15px;border-radius:13px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold) 0%,#9a6520 100%);color:var(--ink);font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;margin-top:8px;box-shadow:0 6px 24px rgba(200,150,62,.28);transition:opacity .15s,transform .12s;-webkit-tap-highlight-color:transparent}
+    .btn:active{transform:scale(.98);opacity:.85}
+    .btn:disabled{opacity:.4}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.17);color:#a898c8;border-radius:10px;padding:10px 20px;font-family:'Lato',sans-serif;font-size:.83rem;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+    .btn-ghost:active{opacity:.7}
+    .btn-sm{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#a898c8;border-radius:10px;padding:9px 14px;font-family:'Lato',sans-serif;font-size:.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+    .btn-sm:active{opacity:.7}
+    .btn-link{background:none;border:none;color:var(--gold-light);font-family:'Lato',sans-serif;font-size:.77rem;cursor:pointer;text-decoration:underline;padding:0;opacity:.8}
+
+    /* ── Divider ── */
+    .div{display:flex;align-items:center;gap:10px;margin:16px 0}
+    .div-line{flex:1;height:1px;background:rgba(255,255,255,.09)}
+    .div-txt{font-size:.69rem;color:#6858a0;letter-spacing:.07em;white-space:nowrap}
+
+    /* ── Profile ── */
+    .avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--plum),var(--rose));display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0}
+    .prow{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+    .pname{font-family:'Playfair Display',serif;font-size:1.05rem}
+    .pmeta{font-size:.75rem;color:#9980bb;margin-top:2px}
+
+    /* ── Story list ── */
+    .slist{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+    .spill{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:13px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;-webkit-tap-highlight-color:transparent}
+    .spill:active{background:rgba(255,255,255,.1)}
+    .ptitle{font-family:'Playfair Display',serif;font-size:.9rem}
+    .pmeta2{font-size:.7rem;color:#9980bb;margin-top:3px}
+    .parrow{color:#6858a0;font-size:.85rem}
+
+    /* ── Tags ── */
+    .trow{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+    .tag{font-size:.68rem;padding:2px 9px;border-radius:999px;background:rgba(123,63,168,.28);color:#c0a0e8}
+
+    /* ── Story box ── */
+    .sbox{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:22px 20px;margin-top:16px}
+    .stitle{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:var(--gold-light);margin-bottom:14px;text-align:center;line-height:1.35}
+    .sbody{font-size:.92rem;line-height:1.9;color:#d0c0ee;white-space:pre-wrap;font-weight:300}
+    .slesson{margin-top:20px;padding:13px 15px;background:rgba(200,150,62,.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0}
+    .slbl{font-size:.68rem;letter-spacing:.1em;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:5px}
+    .slesson p{font-size:.85rem;color:#c8b8e8;font-style:italic}
+
+    /* ── Loading ── */
+    .lwrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:34px 0}
+    .lring{width:44px;height:44px;border-radius:50%;border:3px solid rgba(155,89,208,.2);border-top-color:var(--violet);animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .ltxt{font-size:.86rem;color:#9980bb;font-style:italic;font-weight:300}
+
+    /* ── Errors ── */
+    .err{color:#e08080;font-size:.8rem;margin-bottom:10px;line-height:1.45}
+
+    /* ── Info box ── */
+    .info-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px;margin-bottom:18px}
+    .info-title{font-size:.77rem;font-weight:700;color:var(--gold-light);margin-bottom:9px}
+    .info-body{font-size:.77rem;color:#a898c8;line-height:1.8}
+    .info-body strong{color:var(--gold-light)}
+
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-thumb{background:rgba(155,89,208,.3);border-radius:3px}
+  </style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<!-- Onça SVG reutilizável (oculta, clonada por JS) -->
+<svg id="jaguar-tpl" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="display:none">
+  <!-- Corpo -->
+  <ellipse cx="60" cy="72" rx="32" ry="22" fill="#7b3fa8"/>
+  <!-- Cabeça -->
+  <circle cx="60" cy="42" r="22" fill="#7b3fa8"/>
+  <!-- Orelhas -->
+  <polygon points="42,24 36,8 50,18" fill="#7b3fa8"/>
+  <polygon points="78,24 84,8 70,18" fill="#7b3fa8"/>
+  <polygon points="43,22 38,12 49,19" fill="#c490e8"/>
+  <polygon points="77,22 82,12 71,19" fill="#c490e8"/>
+  <!-- Focinho -->
+  <ellipse cx="60" cy="48" rx="10" ry="7" fill="#c490e8"/>
+  <!-- Nariz -->
+  <ellipse cx="60" cy="45" rx="3.5" ry="2.5" fill="#4a1f7a"/>
+  <!-- Olhos -->
+  <ellipse cx="52" cy="38" rx="4" ry="4.5" fill="#fff"/>
+  <ellipse cx="68" cy="38" rx="4" ry="4.5" fill="#fff"/>
+  <circle cx="52" cy="38" r="2.5" fill="#e8c07a"/>
+  <circle cx="68" cy="38" r="2.5" fill="#e8c07a"/>
+  <circle cx="53" cy="37" r="1" fill="#1a0a2e"/>
+  <circle cx="69" cy="37" r="1" fill="#1a0a2e"/>
+  <!-- Bigodes -->
+  <line x1="50" y1="47" x2="30" y2="44" stroke="#e8c07a" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="50" y1="49" x2="30" y2="50" stroke="#e8c07a" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="70" y1="47" x2="90" y2="44" stroke="#e8c07a" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="70" y1="49" x2="90" y2="50" stroke="#e8c07a" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Boca -->
+  <path d="M55 52 Q60 57 65 52" fill="none" stroke="#4a1f7a" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Pintas -->
+  <ellipse cx="48" cy="68" rx="4" ry="3" fill="#4a1f7a" opacity=".6"/>
+  <ellipse cx="60" cy="74" rx="4" ry="3" fill="#4a1f7a" opacity=".6"/>
+  <ellipse cx="72" cy="68" rx="4" ry="3" fill="#4a1f7a" opacity=".6"/>
+  <ellipse cx="54" cy="79" rx="3" ry="2.5" fill="#4a1f7a" opacity=".5"/>
+  <ellipse cx="66" cy="80" rx="3" ry="2.5" fill="#4a1f7a" opacity=".5"/>
+  <!-- Patas -->
+  <ellipse cx="36" cy="90" rx="9" ry="6" fill="#7b3fa8"/>
+  <ellipse cx="84" cy="90" rx="9" ry="6" fill="#7b3fa8"/>
+  <ellipse cx="45" cy="100" rx="8" ry="5" fill="#6b2f98"/>
+  <ellipse cx="75" cy="100" rx="8" ry="5" fill="#6b2f98"/>
+  <!-- Rabo -->
+  <path d="M88 75 Q105 65 102 50 Q100 38 92 42" fill="none" stroke="#7b3fa8" stroke-width="7" stroke-linecap="round"/>
+  <!-- Brilho/highlight -->
+  <ellipse cx="55" cy="34" rx="4" ry="2.5" fill="rgba(255,255,255,.18)" transform="rotate(-20,55,34)"/>
+</svg>
+
+<!-- ═══════ TELA: API KEY ═══════ -->
+<div id="s-key" class="screen">
+  <div class="hdr">
+    <div class="brand-wrap">
+      <div id="jaguar-key" style="width:88px;height:88px"></div>
+      <h1 class="htitle">Yuna <sup>2</sup></h1>
+      <p class="hsub">Configuração inicial</p>
+    </div>
+  </div>
+  <div class="card">
+    <p class="ctitle">Chave de API</p>
+    <p class="csub">Para gerar as histórias, o app usa IA da Anthropic. Você precisa de uma chave gratuita — só faz isso uma vez.</p>
+
+    <div class="info-box">
+      <div class="info-title">📋 Como obter sua chave (grátis):</div>
+      <div class="info-body">
+        1. Acesse <strong>console.anthropic.com</strong><br>
+        2. Crie uma conta (email + senha)<br>
+        3. Clique em <strong>"API Keys"</strong> → <strong>"Create Key"</strong><br>
+        4. Copie a chave e cole abaixo
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Sua chave de API</label>
+      <input id="k-input" type="password" placeholder="sk-ant-api03-…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"/>
+      <div class="field-note">Fica salva só no seu celular. Nunca é compartilhada.</div>
+    </div>
+
+    <div id="k-err" class="err" style="display:none"></div>
+    <button class="btn" onclick="saveKey()">Salvar e continuar ✨</button>
+  </div>
+</div>
+
+<!-- ═══════ TELA: LOGIN ═══════ -->
+<div id="s-login" class="screen">
+  <div class="hdr">
+    <div class="brand-wrap">
+      <div id="jaguar-login" style="width:96px;height:96px"></div>
+      <h1 class="htitle">Yuna <sup>2</sup></h1>
+      <p class="hsub">Histórias mágicas para dormir</p>
+    </div>
+  </div>
+  <div class="card">
+    <p class="ctitle">Quem vai ouvir a história?</p>
+    <p class="csub">Crie o perfil da criança para personalizar cada história</p>
+
+    <div class="field">
+      <label>Nome da criança</label>
+      <input id="l-name" type="text" placeholder="Ex: Sofia, Lucas…" autocomplete="off" autocorrect="off"/>
+    </div>
+    <div class="field">
+      <label>Idade</label>
+      <select id="l-age">
+        <option value="">Selecione a idade</option>
+        <option value="2">2 anos</option><option value="3">3 anos</option>
+        <option value="4">4 anos</option><option value="5">5 anos</option>
+        <option value="6">6 anos</option><option value="7">7 anos</option>
+        <option value="8">8 anos</option><option value="9">9 anos</option>
+        <option value="10">10 anos</option><option value="11">11 anos</option>
+        <option value="12">12 anos</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Gênero</label>
+      <div class="chips" id="l-gender">
+        <div class="chip" data-v="Menina">👧 Menina</div>
+        <div class="chip" data-v="Menino">👦 Menino</div>
+        <div class="chip" data-v="Outro">🌟 Outro</div>
+      </div>
+    </div>
+
+    <div id="l-err" class="err" style="display:none"></div>
+    <button class="btn" onclick="doLogin()">Entrar ✨</button>
+    <div style="margin-top:12px;text-align:center">
+      <button class="btn-link" onclick="showScreen('s-key')">⚙️ Alterar chave de API</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TELA: DASHBOARD ═══════ -->
+<div id="s-dash" class="screen">
+  <div class="hdr" style="padding-top:36px">
+    <div class="brand-wrap">
+      <div id="jaguar-dash" style="width:72px;height:72px"></div>
+      <h1 class="htitle" style="font-size:1.9rem">Yuna <sup>2</sup></h1>
+      <p class="hsub">Boa noite! O que vamos sonhar?</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="prow">
+      <div class="avatar" id="d-avatar"></div>
+      <div>
+        <div class="pname" id="d-name"></div>
+        <div class="pmeta" id="d-meta"></div>
+      </div>
+      <button class="btn-ghost" style="margin-left:auto" onclick="doLogout()">Sair</button>
+    </div>
+    <button class="btn" onclick="goCreate()">Nova história para dormir 🌟</button>
+    <div id="d-hist-wrap" style="display:none">
+      <div class="div"><div class="div-line"></div><span class="div-txt">Histórias anteriores</span><div class="div-line"></div></div>
+      <div class="slist" id="d-hist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TELA: CRIAR ═══════ -->
+<div id="s-create" class="screen">
+  <div class="hdr" style="padding-top:36px">
+    <span style="font-size:2.4rem;display:block;margin-bottom:6px;animation:fl 5s ease-in-out infinite">✨</span>
+    <h1 class="htitle" style="font-size:1.9rem">Nova História</h1>
+    <p class="hsub" id="c-sub">Personalize a história mágica</p>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label>Áreas de interesse</label>
+      <div class="chips" id="c-interests"></div>
+    </div>
+    <div class="field">
+      <label>Estilo da história</label>
+      <div class="chips" id="c-style"></div>
+    </div>
+    <div class="field">
+      <label>Lição a ensinar</label>
+      <div class="chips" id="c-lesson"></div>
+    </div>
+    <div id="c-err" class="err" style="display:none"></div>
+    <div id="c-loading" class="lwrap" style="display:none">
+      <div class="lring"></div>
+      <p class="ltxt">Tecendo sua história mágica…</p>
+    </div>
+    <div id="c-actions">
+      <button class="btn" onclick="doCreate()">Criar história 🌙</button>
+      <div style="margin-top:11px;text-align:center">
+        <button class="btn-ghost" onclick="goDash()">← Voltar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TELA: HISTÓRIA ═══════ -->
+<div id="s-story" class="screen">
+  <div class="hdr" style="padding-top:36px">
+    <span style="font-size:2.4rem;display:block;margin-bottom:6px">📖</span>
+    <h1 class="htitle" style="font-size:1.9rem">Yuna <sup>2</sup></h1>
+    <p class="hsub" id="st-sub">História de …</p>
+  </div>
+  <div class="card">
+    <div class="trow" id="st-tags" style="margin-bottom:14px"></div>
+    <div class="sbox">
+      <div class="stitle" id="st-title"></div>
+      <div class="sbody"  id="st-body"></div>
+      <div class="slesson" id="st-lesson" style="display:none">
+        <div class="slbl">Lição da história</div>
+        <p id="st-lesson-txt"></p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn-sm" onclick="goCreate()">✨ Nova história</button>
+      <button class="btn-sm" onclick="goDash()">🏠 Início</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Dados ──────────────────────────────────────────────────────────────────────
+const INTERESTS=["Animais","Dinossauros","Espaço","Princesas","Super-heróis","Oceano","Florestas","Dragões","Fadas","Robôs","Esportes","Música"];
+const STYLES=["Engraçado","Aventureiro","Mágico","Calmo e suave","Emocionante","Poético"];
+const LESSONS=["Amizade","Coragem","Bondade","Honestidade","Compartilhar","Persistência","Respeito","Gratidão"];
+const EMOJIS={Animais:"🐾",Dinossauros:"🦕","Espaço":"🌌",Princesas:"👑","Super-heróis":"🦸",Oceano:"🌊",Florestas:"🌲",Dragões:"🐉",Fadas:"🧚",Robôs:"🤖",Esportes:"⚽","Música":"🎵"};
+const SK='hdsk';const SH='hdsh';
+
+// ── Estado ─────────────────────────────────────────────────────────────────────
+let user=null,selInterests=[],selStyle='',selLesson='',genderSel='',storyHistory=[];
+
+// ── Estrelas ───────────────────────────────────────────────────────────────────
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<90;i++){
+    const d=document.createElement('div');d.className='sd';
+    const sz=Math.random()*2.2+.8;
+    d.style.cssText=`top:${Math.random()*100}%;left:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${(Math.random()*3+2).toFixed(1)}s;--dl:${(Math.random()*5).toFixed(1)}s;--lo:${(Math.random()*.18+.04).toFixed(2)};--hi:${(Math.random()*.55+.3).toFixed(2)}`;
+    c.appendChild(d);
+  }
+})();
+
+// ── Onça SVG: clonar template para cada slot ───────────────────────────────────
+(function(){
+  const tpl=document.getElementById('jaguar-tpl');
+  ['jaguar-key','jaguar-login','jaguar-dash'].forEach(id=>{
+    const wrap=document.getElementById(id);
+    if(!wrap)return;
+    const svg=tpl.cloneNode(true);
+    svg.removeAttribute('id');svg.style.display='block';
+    svg.style.width='100%';svg.style.height='100%';
+    svg.classList.add('jaguar-svg');
+    wrap.appendChild(svg);
+  });
+})();
+
+// ── Navegação ──────────────────────────────────────────────────────────────────
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display=msg?'block':'none';}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+(function(){
+  try{storyHistory=JSON.parse(localStorage.getItem(SH)||'[]');}catch(e){storyHistory=[];}
+  const k=localStorage.getItem(SK)||'';
+  showScreen(k.startsWith('sk-ant')?'s-login':'s-key');
+  // Chips gênero
+  document.getElementById('l-gender').querySelectorAll('.chip').forEach(ch=>{
+    ch.onclick=()=>{
+      genderSel=genderSel===ch.dataset.v?'':ch.dataset.v;
+      document.getElementById('l-gender').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.v===genderSel));
+    };
+  });
+  document.getElementById('l-name').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('k-input').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
+})();
+
+// ── API Key ────────────────────────────────────────────────────────────────────
+function saveKey(){
+  const v=document.getElementById('k-input').value.trim();
+  if(!v){showErr('k-err','Cole sua chave de API acima.');return;}
+  if(!v.startsWith('sk-ant')){showErr('k-err','A chave deve começar com "sk-ant…". Verifique se copiou corretamente.');return;}
+  localStorage.setItem(SK,v);
+  showErr('k-err','');
+  document.getElementById('k-input').value='';
+  showScreen('s-login');
+}
+function getKey(){return localStorage.getItem(SK)||'';}
+
+// ── Login ──────────────────────────────────────────────────────────────────────
+function doLogin(){
+  const name=document.getElementById('l-name').value.trim();
+  const age=document.getElementById('l-age').value;
+  if(!name||!age||!genderSel){showErr('l-err','Por favor, preencha todos os campos.');return;}
+  showErr('l-err','');
+  user={name,age,gender:genderSel};
+  renderDash();showScreen('s-dash');
+}
+function doLogout(){
+  user=null;genderSel='';
+  document.getElementById('l-name').value='';
+  document.getElementById('l-age').value='';
+  document.getElementById('l-gender').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  showScreen('s-login');
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────────────────
+function renderDash(){
+  const em=user.gender==='Menina'?'👧':user.gender==='Menino'?'👦':'🌟';
+  document.getElementById('d-avatar').textContent=em;
+  document.getElementById('d-name').textContent=user.name;
+  document.getElementById('d-meta').textContent=`${user.age} anos · ${user.gender}`;
+  const hw=document.getElementById('d-hist-wrap'),hl=document.getElementById('d-hist');
+  if(!storyHistory.length){hw.style.display='none';return;}
+  hw.style.display='block';hl.innerHTML='';
+  storyHistory.slice(0,5).forEach(s=>{
+    const d=document.createElement('div');d.className='spill';
+    const tags=s.meta.interests.slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+    d.innerHTML=`<div><div class="ptitle">${esc(s.title)}</div><div class="pmeta2">${esc(s.meta.date)} · ${esc(s.meta.style)}</div><div class="trow" style="margin-top:5px">${tags}</div></div><span class="parrow">›</span>`;
+    d.onclick=()=>renderStory(s);hl.appendChild(d);
+  });
+}
+function goDash(){renderDash();showScreen('s-dash');}
+
+// ── Chips builder ──────────────────────────────────────────────────────────────
+function buildChips(cid,items,isOn,toggle){
+  const c=document.getElementById(cid);c.innerHTML='';
+  items.forEach(v=>{
+    const d=document.createElement('div');
+    d.className='chip'+(isOn(v)?' on':'');
+    d.textContent=(EMOJIS[v]?EMOJIS[v]+' ':'')+v;
+    d.onclick=()=>{toggle(v);buildChips(cid,items,isOn,toggle);};
+    c.appendChild(d);
+  });
+}
+
+// ── Criar ──────────────────────────────────────────────────────────────────────
+function goCreate(){
+  selInterests=[];selStyle='';selLesson='';
+  showErr('c-err','');
+  document.getElementById('c-sub').textContent=`Personalize a história mágica de ${user.name}`;
+  document.getElementById('c-loading').style.display='none';
+  document.getElementById('c-actions').style.display='block';
+  buildChips('c-interests',INTERESTS,v=>selInterests.includes(v),v=>{const i=selInterests.indexOf(v);i>-1?selInterests.splice(i,1):selInterests.push(v);});
+  buildChips('c-style',STYLES,v=>selStyle===v,v=>{selStyle=selStyle===v?'':v;});
+  buildChips('c-lesson',LESSONS,v=>selLesson===v,v=>{selLesson=selLesson===v?'':v;});
+  showScreen('s-create');
+}
+
+async function doCreate(){
+  if(!selInterests.length||!selStyle||!selLesson){showErr('c-err','Selecione pelo menos um interesse, um estilo e uma lição.');return;}
+  showErr('c-err','');
+  document.getElementById('c-loading').style.display='flex';
+  document.getElementById('c-actions').style.display='none';
+  try{
+    const result=await callClaude();
+    const entry={...result,meta:{interests:[...selInterests],style:selStyle,lesson:selLesson,date:new Date().toLocaleDateString('pt-BR')}};
+    storyHistory.unshift(entry);
+    try{localStorage.setItem(SH,JSON.stringify(storyHistory.slice(0,20)));}catch(e){}
+    renderStory(entry);
+  }catch(err){
+    document.getElementById('c-loading').style.display='none';
+    document.getElementById('c-actions').style.display='block';
+    const msgs={auth:'Chave de API inválida. Vá em "Alterar chave de API" e cole a chave correta.',parse:'Resposta inesperada. Tente novamente.',network:'Erro de conexão com o servidor da API. Verifique se o site está hospedado em HTTPS (não abra como arquivo local).',api:'Erro no servidor. Tente novamente em instantes.'};
+    showErr('c-err',msgs[err.message]||'Erro inesperado. Tente novamente.');
+  }
+}
+
+// ── Claude API ─────────────────────────────────────────────────────────────────
+async function callClaude(){
+  const key=getKey();
+  if(!key)throw new Error('auth');
+  const art=user.gender==='Menina'?'a':'o';
+  const prompt=`Crie uma história infantil para dormir em português brasileiro para ${art} ${user.name}, que tem ${user.age} anos.\n\nCaracterísticas:\n- Nome: ${user.name}\n- Idade: ${user.age} anos\n- Gênero: ${user.gender}\n- Interesses: ${selInterests.join(', ')}\n- Estilo: ${selStyle}\n- Lição: ${selLesson}\n\nInstruções:\n- Entre 250 e 350 palavras\n- Linguagem adequada para ${user.age} anos\n- ${user.name} é o(a) protagonista\n- Termine de forma suave e sonolenta\n- Responda APENAS com JSON válido, sem markdown:\n{"title":"título criativo","story":"texto completo","lesson_summary":"lição em uma frase"}`;
+
+  let res;
+  try{
+    res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+  }catch(e){throw new Error('network');}
+
+  if(res.status===401||res.status===403)throw new Error('auth');
+  if(!res.ok)throw new Error('api');
+
+  const data=await res.json();
+  const raw=data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+  try{return JSON.parse(raw);}catch(e){throw new Error('parse');}
+}
+
+// ── Renderizar história ────────────────────────────────────────────────────────
+function renderStory(s){
+  document.getElementById('st-sub').textContent=`História de ${user.name}`;
+  document.getElementById('st-title').textContent=`"${s.title}"`;
+  document.getElementById('st-body').textContent=s.story;
+  const te=document.getElementById('st-tags');
+  te.innerHTML=s.meta.interests.map(t=>`<span class="tag">${EMOJIS[t]||''} ${esc(t)}</span>`).join('')+`<span class="tag">✦ ${esc(s.meta.style)}</span>`;
+  const le=document.getElementById('st-lesson');
+  if(s.lesson_summary){document.getElementById('st-lesson-txt').textContent=s.lesson_summary;le.style.display='block';}
+  else le.style.display='none';
+  showScreen('s-story');
+}
+</script>
+</body>
+</html>
